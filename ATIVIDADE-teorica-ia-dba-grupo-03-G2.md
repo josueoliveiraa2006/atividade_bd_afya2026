@@ -7,8 +7,6 @@
 
 ## Resumo Executivo
 
-## Resumo Executivo
-
 A utilização de ferramentas de Inteligência Artificial generativa por usuários especialistas para elaboração de consultas SQL modifica a forma tradicional de interação com os bancos de dados e cria novos desafios para a administração dos dados. Embora essas ferramentas possam facilitar a elaboração de consultas complexas e auxiliar na produção de análises, suas respostas não devem ser consideradas automaticamente corretas ou autorizadas. Uma consulta pode apresentar erros de sintaxe, produzir resultados logicamente incorretos, acessar informações além da necessidade do usuário ou consumir recursos excessivos do Sistema de Gerenciamento de Banco de Dados **(SGBD)**.
 
 Nesse contexto, a distribuição dos dados deve ser realizada de forma controlada, considerando a função de cada usuário e a finalidade de seu acesso. O princípio do menor privilégio deve orientar a concessão de permissões, de modo que cada usuário receba somente os acessos necessários para desempenhar suas atividades. Recursos do PostgreSQL, como `roles`, privilégios e `views`, podem ser utilizados para limitar o acesso a determinados dados e operações.
@@ -214,3 +212,5 @@ BRASIL. Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de D
 Aprendizados, reflexões e principais pontos observados pelo grupo.
 
 ## Link do Repositório Git
+
+https://github.com/josueoliveiraa2006/atividade_bd_afya2026.git
