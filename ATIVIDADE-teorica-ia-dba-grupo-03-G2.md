@@ -179,8 +179,7 @@ Essa abordagem também está relacionada aos princípios da **Lei Geral de Prote
 Consequentemente, a distribuição de dados entre os diferentes perfis de usuários não deve ser baseada apenas na capacidade técnica de consultar o banco. Ela deve considerar a finalidade da atividade, a necessidade efetiva de acesso e o nível de autorização compatível com a função exercida.
 
 ### 1.3 Riscos do uso de IA por usuários especialistas
-Consulta incorreta, exposição de dados sensíveis, degradação de performance,
-vazamento por prompts — impactos na segurança e na integridade.
+Modifiquei esse arquivo apenas para fins didáticos
 
 ### 1.4 Distribuição segura de dados
 Menor privilégio, views, roles customizadas, controle de execução, auditoria,
