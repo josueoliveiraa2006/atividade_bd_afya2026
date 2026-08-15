@@ -186,8 +186,32 @@ Menor privilégio, views, roles customizadas, controle de execução, auditoria,
 conformidade (LGPD).
 
 ### 1.5 Atuação do DBA no cenário de IA
-Monitoramento, políticas de acesso, auditoria, orientação aos usuários,
-performance e backups.
+
+Em um ambiente no qual usuários especialistas utilizam ferramentas de Inteligência Artificial para gerar consultas SQL e produzir relatórios, a atuação do **Administrador de Banco de Dados (DBA)** torna-se essencial para garantir segurança, integridade, disponibilidade e desempenho. O uso da IA pode facilitar a análise dos dados, mas não elimina a necessidade de controle sobre quem pode acessá-los e quais operações podem ser realizadas.
+
+Uma das principais responsabilidades do DBA nesse cenário é a definição e manutenção das **políticas de acesso**. Cada usuário deve possuir somente os privilégios necessários para desempenhar sua função, seguindo o princípio do menor privilégio. No PostgreSQL, esse controle pode ser realizado por meio de *roles*, privilégios e *views*. Dessa forma, um usuário responsável por relatórios de vendas pode receber permissão apenas para consultar as informações necessárias, sem possuir autorização para alterar ou excluir registros. Dados pessoais, como CPF, endereço ou telefone, também podem ser ocultados quando não forem necessários para a atividade realizada.
+
+O DBA também deve realizar o **monitoramento das consultas** executadas no banco. Uma consulta gerada por IA pode estar sintaticamente correta e, mesmo assim, apresentar erros de lógica ou utilizar recursos de maneira excessiva. Consultas com muitas junções, processamento de grandes quantidades de registros ou ausência de filtros adequados podem aumentar o consumo de memória, processamento e operações de entrada e saída, prejudicando outros usuários e aplicações. Cabe ao DBA acompanhar esse comportamento, identificar consultas lentas ou abusivas e estabelecer limites de utilização quando necessário.
+
+
+A atuação do DBA também envolve a **orientação dos usuários especialistas**. Informações reais de clientes não devem ser inseridas indiscriminadamente em ferramentas externas de IA. Dados como CPF, endereço, informações financeiras e históricos de compras podem estar sujeitos às regras de proteção de dados pessoais. Nesse sentido, o DBA deve atuar em conjunto com as políticas de segurança e privacidade da organização, contribuindo para que o acesso e o tratamento das informações estejam de acordo com princípios estabelecidos pela **Lei Geral de Proteção de Dados Pessoais (LGPD)**, especialmente necessidade, segurança e prevenção.
+
+Além dessas responsabilidades, permanecem fundamentais atividades tradicionais de administração, como manutenção de **backups, índices e mecanismos de recuperação**. Os backups permitem recuperar informações diante de falhas, exclusões indevidas ou outros incidentes, enquanto os índices, quando adequadamente planejados, podem melhorar o desempenho das consultas. Assim, a introdução de ferramentas de IA não substitui o trabalho do DBA, mas amplia a necessidade de acompanhamento técnico e de políticas capazes de preservar a segurança e o funcionamento adequado do banco de dados.
+
+### 1.6 Análise crítica: qual a melhor abordagem?
+
+A posição do grupo é que o uso de Inteligência Artificial por usuários especialistas pode contribuir para aumentar a produtividade e facilitar a elaboração de consultas complexas, porém **não deve resultar em acesso irrestrito aos dados**. A segurança não pode depender apenas da capacidade do usuário de formular corretamente um prompt nem da possibilidade de a ferramenta de IA produzir uma consulta adequada. Os mecanismos de proteção devem existir independentemente da consulta gerada.
+
+A abordagem considerada mais adequada é a adoção de **camadas complementares de segurança**. Inicialmente, cada usuário deve possuir uma identificação própria e receber somente os privilégios necessários para sua atividade. As *roles* podem organizar essas permissões de acordo com os diferentes perfis existentes na organização, enquanto as *views* podem restringir as colunas e informações disponibilizadas. Quando necessário, mecanismos adicionais, como políticas de segurança em nível de linha (*Row-Level Security*), podem limitar quais registros determinados usuários podem consultar.
+
+Por exemplo, um analista responsável por verificar o total de vendas por região pode necessitar de informações como estado, data e valor da venda, mas não precisa necessariamente conhecer o CPF ou o endereço completo de cada cliente. Nesse caso, o DBA pode disponibilizar uma *view* contendo somente os dados necessários para a análise. Mesmo que uma ferramenta de IA produza uma consulta tentando acessar informações adicionais, as permissões definidas no banco devem impedir o acesso não autorizado.
+
+Essa estratégia deve ser complementada por **auditoria, monitoramento e controle de recursos**. Consultas excessivamente pesadas precisam ser identificadas para evitar degradação do desempenho, e operações relevantes devem permanecer associadas ao usuário responsável. Também devem existir regras organizacionais para impedir que dados pessoais ou informações confidenciais sejam enviados sem autorização para serviços externos de IA.
+
+Essa abordagem está relacionada ao princípio da **necessidade** previsto na LGPD, segundo o qual o tratamento de dados pessoais deve ser limitado ao mínimo necessário para atingir determinada finalidade. Portanto, se uma análise pode ser realizada sem disponibilizar CPF, endereço ou outras informações pessoais, esses dados não devem ser expostos ao usuário ou à ferramenta utilizada.
+
+Dessa forma, o grupo considera que a IA deve funcionar como **ferramenta de apoio à análise e à elaboração de consultas, e não como mecanismo de autorização de acesso aos dados**. A autorização deve continuar sendo definida pelo SGBD e pelas políticas estabelecidas pela organização. A combinação de menor privilégio, *roles*, *views*, auditoria, monitoramento, proteção de dados pessoais e acompanhamento do DBA permite aproveitar os benefícios da IA sem comprometer a confidencialidade, a integridade, a disponibilidade e a governança das informações.
+
 
 ### 1.6 Análise crítica: qual a melhor abordagem?
 Posição fundamentada do grupo sobre como distribuir dados com segurança
