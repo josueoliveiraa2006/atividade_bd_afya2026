@@ -196,8 +196,128 @@ no contexto do uso de IA.
 
 ## 2. Exemplos e Casos
 
-Exemplo de view `clientes_visiveis` no PostgreSQL e exemplo de role/permissão.
-Um caso real: sistema de vendas, clínica ou biblioteca.
+**Exemplo de `VIEW` para limitar o acesso aos dados**
+
+Uma forma prática de aplicar o princípio do menor privilégio no PostgreSQL é utilizar views para disponibilizar somente as informações necessárias ao usuário especialista. Uma view é uma consulta armazenada que apresenta ao usuário um conjunto específico de linhas e colunas, sem que seja necessário conceder acesso direto à tabela original. No contexto apresentado, isso permite que o usuário realize análises por meio de IA sem receber automaticamente todos os dados existentes no banco.
+
+Supondo uma tabela `clientes` com as colunas `id`, `nome`, `cpf`, `endereco`, `email` e `data_cadastro`, uma view destinada à análise comercial poderia ser criada da seguinte maneira:
+
+```sql
+CREATE VIEW clientes_visiveis AS
+SELECT
+    id,
+    nome,
+    email,
+    data_cadastro
+FROM clientes;
+```
+
+Nesse exemplo, informações como `cpf` e `endereco` não são disponibilizadas pela view. O usuário especialista pode realizar consultas sobre os clientes que estão autorizados para sua atividade, mas não possui acesso direto aos campos que não são necessários para a análise.
+
+Também é possível limitar as linhas apresentadas. Por exemplo, uma organização pode permitir que determinado setor consulte apenas clientes de uma região específica:
+
+```sql
+CREATE VIEW clientes_norte AS
+SELECT
+    id,
+    nome,
+    email,
+    data_cadastro
+FROM clientes
+WHERE regiao = 'Norte';
+```
+
+Essa estratégia é importante porque restringir o acesso somente às colunas não é suficiente quando diferentes usuários também devem visualizar conjuntos diferentes de registros. Em situações que exigem controle por usuário ou função, o PostgreSQL também oferece Row-Level Security (RLS), mecanismo que permite estabelecer políticas para determinar quais linhas cada usuário pode consultar ou modificar.
+
+**Exemplo de `ROLE` e permissões**
+
+No PostgreSQL, usuários e grupos de permissões são representados por roles. Uma role pode receber privilégios específicos sobre tabelas, views e outros objetos do banco. Dessa forma, o DBA pode organizar os acessos de acordo com a função exercida por cada usuário, evitando que todos recebam os mesmos privilégios.
+
+Um exemplo seria criar uma role destinada aos usuários especialistas responsáveis por consultas analíticas:
+
+```sql
+CREATE ROLE usuario_analista NOLOGIN;
+
+GRANT USAGE ON SCHEMA public TO usuario_analista;
+
+GRANT SELECT ON clientes_visiveis TO usuario_analista;
+```
+
+Posteriormente, um usuário específico pode ser associado a essa role:
+
+```sql
+GRANT usuario_analista TO especialista01;
+```
+
+Nesse modelo, `especialista01` poderá consultar a view autorizada, mas não necessariamente terá permissão para consultar diretamente a tabela `clientes`. Isso representa uma aplicação prática do princípio do menor privilégio, pois o usuário recebe somente os acessos necessários para desempenhar sua atividade.
+
+Também é importante evitar privilégios administrativos desnecessários. No PostgreSQL, uma role com atributo `SUPERUSER` pode ignorar diversas restrições de acesso, razão pela qual esse nível de privilégio deve ser reservado a situações que realmente o exijam.
+
+**Caso aplicado: sistema de vendas**
+
+Considere uma empresa que utiliza PostgreSQL para armazenar clientes, produtos, vendas e pagamentos. Os usuários especialistas do setor comercial utilizam ferramentas de IA para elaborar consultas e gerar relatórios, como:
+
+"Qual foi o faturamento mensal por região durante o último ano?"
+
+O uso da IA pode aumentar a produtividade, mas não significa que o usuário deva possuir acesso irrestrito ao banco. O DBA pode criar uma estrutura em que a ferramenta seja utilizada somente sobre objetos previamente autorizados.
+
+Uma possibilidade seria disponibilizar uma view de análise contendo apenas informações como região, mês, quantidade de vendas e valor total:
+
+```sql
+CREATE VIEW relatorio_vendas AS
+SELECT
+    regiao,
+    DATE_TRUNC('month', data_venda) AS mes,
+    COUNT(*) AS quantidade_vendas,
+    SUM(valor) AS faturamento
+FROM vendas
+GROUP BY regiao, DATE_TRUNC('month', data_venda);
+```
+
+A role utilizada pelos especialistas receberia apenas permissão de leitura nessa view. Assim, uma consulta gerada pela IA poderia analisar os resultados disponíveis sem possuir acesso direto a informações pessoais ou financeiras que não façam parte da finalidade da análise.
+
+Por exemplo:
+
+```sql
+SELECT
+    regiao,
+    mes,
+    faturamento
+FROM relatorio_vendas
+ORDER BY mes, regiao;
+```
+
+Nesse cenário, a IA permanece como ferramenta de apoio à construção da consulta, enquanto o banco continua responsável por aplicar as restrições de acesso. A consulta produzida automaticamente não deve ser considerada confiável apenas porque possui sintaxe válida: ela precisa respeitar as permissões existentes e, quando necessário, ser analisada pelo DBA ou por mecanismos de controle definidos pela organização.
+
+**Exemplo de controle sobre dados pessoais**
+
+Suponha que a tabela de clientes contenha `cpf`, telefone, endereço e e-mail. Para uma análise de vendas, essas informações podem ser desnecessárias. A organização pode fornecer ao usuário somente dados agregados ou campos necessários para a finalidade da consulta.
+
+Essa medida está relacionada aos princípios de segurança e prevenção previstos na LGPD. A legislação determina a adoção de medidas técnicas e administrativas para proteger dados pessoais contra acessos não autorizados, perda, alteração, comunicação ou tratamento inadequado ou ilícito.
+
+Assim, em vez de disponibilizar:
+
+CPF | Nome | Endereço | Telefone | Valor da compra
+
+uma estrutura destinada à análise comercial poderia fornecer:
+
+Região | Mês | Quantidade de vendas | Faturamento
+
+A diferença demonstra que distribuir dados não significa distribuir todo o conteúdo armazenado no banco. A distribuição deve considerar a finalidade do acesso, o perfil do usuário e a necessidade de cada informação.
+
+**Caso de uso indevido de consulta gerada por IA**
+
+Considere ainda que um especialista solicite à IA:
+
+"Mostre todos os clientes e seus CPFs que compraram acima de R$ 10.000."
+
+Mesmo que a consulta SQL produzida esteja sintaticamente correta, ela pode ser inadequada do ponto de vista de segurança e privacidade. O problema não está somente na capacidade da IA de gerar SQL, mas também na autorização concedida ao usuário e na finalidade do tratamento dos dados.
+
+Em uma arquitetura segura, a existência de uma view sem `cpf`, combinada com uma role que não possui `SELECT` sobre a tabela original, impede que a consulta simplesmente obtenha essa informação. O controle, portanto, não depende exclusivamente da capacidade do usuário de compreender ou revisar o código SQL; ele é aplicado diretamente pelo SGBD.
+
+Além disso, quando ferramentas externas de IA são utilizadas, dados pessoais ou informações internas não devem ser enviados indiscriminadamente aos serviços. A organização deve estabelecer regras para determinar quais informações podem ser inseridas nos prompts e quais devem permanecer exclusivamente no ambiente corporativo. Essa preocupação decorre do dever de proteção e segurança dos dados pessoais previsto na LGPD.
+
+Dessa forma, os exemplos demonstram que a utilização de IA por usuários especialistas deve ocorrer sobre uma estrutura de acesso controlada, na qual views, roles, permissões e políticas de segurança definem previamente quais dados podem ser consultados. A IA pode auxiliar na elaboração e interpretação das consultas, mas não deve substituir os mecanismos de autorização e governança implementados pelo banco de dados.
 
 ## 3. Referências
 
