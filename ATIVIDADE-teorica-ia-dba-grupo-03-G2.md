@@ -179,11 +179,38 @@ Essa abordagem também está relacionada aos princípios da **Lei Geral de Prote
 Consequentemente, a distribuição de dados entre os diferentes perfis de usuários não deve ser baseada apenas na capacidade técnica de consultar o banco. Ela deve considerar a finalidade da atividade, a necessidade efetiva de acesso e o nível de autorização compatível com a função exercida.
 
 ### 1.3 Riscos do uso de IA por usuários especialistas
-Modifiquei esse arquivo apenas para fins didáticos
+
+Os usuários especialistas possuem conhecimento sobre as regras de negócio e utilizam o banco de dados para realizar consultas, análises e geração de relatórios. Com o uso de ferramentas de Inteligência Artificial generativa, esses usuários passaram a produzir consultas SQL de forma mais rápida, porém nem sempre conseguem avaliar se o código gerado está correto ou se respeita as políticas de segurança da organização. Dessa forma, o uso da IA deve ser acompanhado por mecanismos de controle e validação.
+
+Um dos principais riscos é a geração de consultas incorretas. A IA pode produzir comandos SQL com erros de lógica, como junções inadequadas, filtros incompletos ou agregações incorretas. Embora a consulta seja executada pelo SGBD, o resultado pode apresentar informações inconsistentes, levando a interpretações equivocadas e decisões baseadas em dados incorretos.
+
+Outro risco relevante é a exposição de dados sensíveis. Ferramentas de IA podem gerar consultas que retornem informações pessoais, como CPF, endereço, telefone, dados financeiros ou históricos de clientes, sem que exista necessidade para a atividade desempenhada pelo usuário. Caso o controle de acesso seja inadequado, informações protegidas pela Lei Geral de Proteção de Dados (LGPD) poderão ser visualizadas por pessoas sem autorização.
+
+Também deve ser considerada a degradação de desempenho do banco de dados. Consultas geradas automaticamente podem utilizar operações de alto custo computacional, como junções entre tabelas muito grandes, ausência de filtros ou ordenações desnecessárias. Essas consultas consomem recursos do servidor, aumentam o tempo de resposta das aplicações e podem comprometer a disponibilidade do sistema para os demais usuários.
+
+Um quarto risco consiste no vazamento de informações por meio dos prompts enviados às ferramentas de IA. Quando usuários copiam tabelas, registros ou trechos de consultas contendo informações corporativas para serviços externos de IA, esses dados deixam o ambiente controlado pela organização. Dependendo da política da ferramenta utilizada, essas informações podem ser armazenadas ou processadas em infraestrutura de terceiros, criando riscos de confidencialidade e de descumprimento da LGPD.
+
+Além desses aspectos, existe o risco de uso inadequado de privilégios. Caso um usuário possua permissões excessivas, a IA poderá gerar comandos que acessem tabelas ou informações além daquelas necessárias para sua função. Embora a IA não conceda permissões por si só, ela pode facilitar o aproveitamento de privilégios já existentes, aumentando a superfície de exposição dos dados.
+
+Em conjunto, esses riscos demonstram que a utilização de IA em ambientes de banco de dados exige mecanismos de segurança capazes de limitar o acesso às informações, monitorar as consultas executadas e garantir que a tecnologia seja utilizada de forma compatível com as políticas da organização.
 
 ### 1.4 Distribuição segura de dados
-Menor privilégio, views, roles customizadas, controle de execução, auditoria,
-conformidade (LGPD).
+
+A distribuição segura de dados consiste em disponibilizar informações aos usuários de acordo com suas necessidades de trabalho, preservando a confidencialidade, a integridade e a disponibilidade dos dados. No contexto de usuários especialistas que utilizam ferramentas de IA para elaborar consultas SQL, essa distribuição deve ser baseada em políticas de segurança implementadas pelo SGBD e administradas pelo DBA.
+
+O primeiro princípio é o princípio do menor privilégio (Least Privilege). Esse conceito estabelece que cada usuário deve possuir apenas as permissões estritamente necessárias para executar suas atividades. Assim, um analista responsável por consultas de vendas, por exemplo, não deve ter acesso às tabelas de recursos humanos ou à alteração de registros no banco de dados. A limitação dos privilégios reduz os impactos de erros humanos, consultas inadequadas e possíveis usos indevidos das permissões existentes.
+
+Outra estratégia importante é a utilização de views. Uma view é uma tabela virtual construída a partir de uma consulta SQL, permitindo disponibilizar apenas as colunas e linhas necessárias para determinado perfil de usuário. Dessa forma, informações sensíveis, como CPF ou endereço completo, podem ser omitidas da visualização, enquanto os dados necessários para análises permanecem disponíveis. Essa abordagem também reduz a complexidade das consultas elaboradas pelos usuários especialistas.
+
+A criação de roles customizadas constitui outra medida essencial. No PostgreSQL, uma role representa um conjunto de permissões que pode ser atribuído a diferentes usuários. Em vez de conceder permissões individualmente, o DBA define perfis específicos, como analista financeiro, analista comercial ou auditor, atribuindo a cada um apenas os acessos compatíveis com suas responsabilidades. Essa organização simplifica a administração das permissões e diminui o risco de concessões inadequadas.
+
+O controle do tempo de execução e da concorrência das consultas também contribui para a segurança operacional. O PostgreSQL permite estabelecer limites para consultas excessivamente longas, evitando que comandos gerados pela IA consumam recursos por tempo indefinido. Da mesma forma, o monitoramento da concorrência impede que consultas pesadas comprometam o desempenho do banco de dados e afetem outros usuários.
+
+Outra prática indispensável é a auditoria e o rastreamento das operações. O registro de logs possibilita identificar quem acessou determinados dados, quais consultas foram executadas e em que momento ocorreram. Essas informações auxiliam a investigação de incidentes, permitem detectar padrões de uso inadequado e apoiam o cumprimento de requisitos legais e regulatórios.
+
+Por fim, todas essas estratégias devem estar alinhadas às exigências da Lei Geral de Proteção de Dados (LGPD). A legislação determina que dados pessoais sejam tratados de forma segura, apenas para finalidades legítimas e com acesso restrito às pessoas autorizadas. Nesse contexto, mecanismos como controle de permissões, uso de views, auditoria e monitoramento não apenas fortalecem a segurança do banco de dados, mas também contribuem para a conformidade legal da organização.
+
+Assim, a distribuição segura de dados depende da combinação de controles técnicos e administrativos, garantindo que os usuários especialistas possam utilizar ferramentas de IA para apoiar suas atividades sem comprometer a segurança, a integridade e a privacidade das informações armazenadas no banco de dados.
 
 ### 1.5 Atuação do DBA no cenário de IA
 
