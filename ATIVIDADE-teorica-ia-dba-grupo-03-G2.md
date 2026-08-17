@@ -378,9 +378,13 @@ POSTGRESQL GLOBAL DEVELOPMENT GROUP. PostgreSQL 18 Documentation: Privileges. Po
 
 BRASIL. Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais (LGPD). Brasília, DF: Presidência da República. Texto oficial da LGPD — Planalto
 
-## 4. Conclusões
+## 4. Conclusão
 
-Aprendizados, reflexões e principais pontos observados pelo grupo.
+A análise realizada demonstra que o uso de ferramentas de Inteligência Artificial por usuários especialistas pode facilitar a elaboração de consultas e a análise de informações, mas também exige maior atenção aos mecanismos de controle do banco de dados. É necessário compreender as permissões, a estrutura dos dados e as regras que devem ser respeitadas.
+
+Nesse contexto, o papel do DBA é fundamental. Pois além de administrar a estrutura e o desempenho do PostgreSQL, ele deve definir políticas de acesso compatíveis com cada perfil de usuário, utilizando recursos como roles, privilégios e views. Dessa maneira, um usuário pode realizar as consultas necessárias sem receber acesso a informações que não precisa ou autorização para alterar dados de forma ilegal. Os exemplos apresentados também mostram que a segurança deve ser aplicada diretamente no banco. Mesmo que uma ferramenta de IA produza uma consulta válida, ela não deve conseguir ultrapassar as permissões estabelecidas. Então, esse modelo reduz os impactos de erros de consulta, exposição de dados pessoais e operações que possam comprometer o desempenho do sistema.
+
+Por fim, conclui-se que a utilização de IA no acesso aos dados pode sim fazer parte da rotina de uma organização, desde que esteja acompanhada por controle de acesso, monitoramento, auditoria e critérios para proteger os dados. A principal questão não é impedir o uso da tecnologia, mas estabelecer limites para que seus benefícios sejam aproveitados sem retirar do DBA e do SGBD a responsabilidade pelo controle e pela segurança das informações.
 
 ## Link do Repositório Git
 
