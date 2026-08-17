@@ -373,6 +373,10 @@ POSTGRESQL GLOBAL DEVELOPMENT GROUP. PostgreSQL 18 Documentation: Privileges. Po
 
 BRASIL. Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais (LGPD). Brasília, DF: Presidência da República. Texto oficial da LGPD — Planalto
 
+GARCIA, Lara R. Lei Geral de Proteção de Dados (LGPD): Guia de implantação. São Paulo: Editora Blucher, 2020. E-book. p.1. ISBN 9786555060164. Disponível em: https://integrada.minhabiblioteca.com.br/reader/books/9786555060164/. Acesso em: 15 ago. 2026.
+
+SILBERSCHATZ, Abraham. Sistema de Banco de Dados. 7. ed. Rio de Janeiro: GEN LTC, 2020. E-book. p.22. ISBN 9788595157552. Disponível em: https://integrada.minhabiblioteca.com.br/reader/books/9788595157552/. Acesso em: 14 ago. 2026.
+
 ## 4. Conclusão
 
 A análise realizada demonstra que o uso de ferramentas de Inteligência Artificial por usuários especialistas pode facilitar a elaboração de consultas e a análise de informações, mas também exige maior atenção aos mecanismos de controle do banco de dados. É necessário compreender as permissões, a estrutura dos dados e as regras que devem ser respeitadas.
