@@ -240,11 +240,6 @@ Essa abordagem está relacionada ao princípio da **necessidade** previsto na LG
 
 Dessa forma, o grupo considera que a IA deve funcionar como **ferramenta de apoio à análise e à elaboração de consultas, e não como mecanismo de autorização de acesso aos dados**. A autorização deve continuar sendo definida pelo SGBD e pelas políticas estabelecidas pela organização. A combinação de menor privilégio, *roles*, *views*, auditoria, monitoramento, proteção de dados pessoais e acompanhamento do DBA permite aproveitar os benefícios da IA sem comprometer a confidencialidade, a integridade, a disponibilidade e a governança das informações.
 
-
-### 1.6 Análise crítica: qual a melhor abordagem?
-Posição fundamentada do grupo sobre como distribuir dados com segurança
-no contexto do uso de IA.
-
 ## 2. Exemplos e Casos
 
 **Exemplo de `VIEW` para limitar o acesso aos dados**
